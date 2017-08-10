@@ -4766,19 +4766,12 @@ public class MaplePacketCreator {
         if (hm.isOwner(chr)) {
             mplew.writeInt(hm.getTimeLeft());
             mplew.write(firstTime ? 1 : 0);
-            //List<SoldItem> sold = hm.getSold();
             mplew.write(0);//sold.size()
-            /*for (SoldItem s : sold) { fix this
-             mplew.writeInt(s.getItemId());
-             mplew.writeShort(s.getQuantity());
-             mplew.writeInt(s.getMesos());
-             mplew.writeMapleAsciiString(s.getBuyer());
-             }*/
             mplew.writeInt(chr.getMerchantMeso());//:D?
         }
         mplew.writeMapleAsciiString(hm.getDescription());
         mplew.write(0x10); //SLOTS, which is 16 for most stores...slotMax
-        mplew.writeInt(chr.getMeso());
+        mplew.writeInt(chr.getMerchantMeso());
         mplew.write(hm.getItems().size());
         if (hm.getItems().isEmpty()) {
             mplew.write(0);//Hmm??
@@ -4797,7 +4790,7 @@ public class MaplePacketCreator {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.PLAYER_INTERACTION.getValue());
         mplew.write(PlayerInteractionHandler.Action.UPDATE_MERCHANT.getCode());
-        mplew.writeInt(chr.getMeso());
+        mplew.writeInt(chr.getMerchantMeso());
         mplew.write(hm.getItems().size());
         for (MaplePlayerShopItem item : hm.getItems()) {
             mplew.writeShort(item.getBundles());
