@@ -2357,7 +2357,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     }
 
     public boolean isGM() {
-        return gmLevel > 0;
+        return gmLevel > 2;
+    }
+    
+    public boolean isDonator() {
+        return gmLevel >= 1;
     }
 
     public boolean isHidden() {

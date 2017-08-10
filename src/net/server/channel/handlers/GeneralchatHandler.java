@@ -43,6 +43,14 @@ public final class GeneralchatHandler extends net.AbstractMaplePacketHandler {
                     }
                 }
             }
+            if (chr.isDonator()) {
+			//	chr.addCommandToList(s);
+				if (!Commands.executePlayerCommand(c, sp, heading)) {
+				   Commands.executeDonatorCommand(c, sp, heading); {
+				    }
+				}
+            }
+           // }
         } else {
             if (!chr.isHidden())
                 chr.getMap().broadcastMessage(MaplePacketCreator.getChatText(chr.getId(), s, chr.isGM(), slea.readByte()));
