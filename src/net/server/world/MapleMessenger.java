@@ -33,9 +33,12 @@ public final class MapleMessenger {
 
     public MapleMessenger(int id, MapleMessengerCharacter chrfor) {
         this.members.add(chrfor);
+        for (int i = 0; i < 3; i++) {
+            pos[i] = true;
+        }
         chrfor.setPosition(getLowestPosition());
-        this.id = id;
-    }
+        this.id = id;      
+    }  
 
     public void addMember(MapleMessengerCharacter member) {
         members.add(member);
