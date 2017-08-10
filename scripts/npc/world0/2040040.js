@@ -1,108 +1,122 @@
-/*
-	This file is part of the OdinMS Maple Story Server
-    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-		       Matthias Butz <matze@odinms.de>
-		       Jan Christian Meyer <vimes@odinms.de>
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
+importPackage(Packages.tools);
+importPackage(java.awt);
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/*
-@	Author : Raz
-@
-@	NPC = Green Balloon
-@	Map = Hidden-Street <Stage 5>
-@	NPC MapId = 922010500
-@	Function = LPQ - 5th Stage
-@
- */
-
-var status = 0;
+var status;
+var partyLdr;
+var chatState;
 var party;
 var preamble;
-var gaveItems;
 
 function start() {
     status = -1;
+    playerStatus = cm.isLeader();
+    preamble = null;
     action(1, 0, 0);
 }
 
 function action(mode, type, selection) {
-
-        
     if (mode == -1) {
-        cm.dispose();//ExitChat
-    }else if (mode == 0){
-        cm.dispose();//No
-    }else{		    //Regular Talk
+        cm.dispose();
+    } else {
+        if (mode == 0 && status == 0) {
+            cm.dispose();
+            return;
+        }
         if (mode == 1)
             status++;
         else
             status--;
-        var eim = cm.getPlayer().getEventInstance(); 
-        var nthtext = "5th";
-
-
-        if (status == 0) {
-            party = eim.getPlayers();
-            preamble = eim.getProperty("leader" + nthtext + "preamble");
-            gaveItems = eim.getProperty("leader" + nthtext + "gaveItems");
-            if (preamble == null) {
-                cm.sendNext("Hi. Welcome to the " + nthtext + " stage. This is the 2nd stage, but everyone has to cooperate. There are 6 portals here. One is guarded by undefeatable monsters, and one is very high. I'd like you and your party to go in each one and break the boxes inside. Bring back the drops -- there should be 24.");//not 24!
-                eim.setProperty("leader" + nthtext + "preamble","done");
-                cm.dispose();
-            }else{
-                if(!isLeader()){
-                    if(gaveItems == null){
-                        cm.sendOk("Please tell your #bParty-Leader#k to come talk to me.");
-                        cm.dispose();
-                    }else{
-                        cm.sendOk("Hurry, goto the next stage, the portal is open!");
+            if (playerStatus) { // party leader
+                if (status == 0) {
+                    var eim = cm.getPlayer().getEventInstance();
+                    party = eim.getPlayers();
+                    preamble = eim.getProperty("leader5thpreamble");
+                    if (preamble == null) {
+                        cm.sendNext("Welcome to the fourth stage of Ludibrium PQ. There are 6 portals in this stage. I hope you brought the right party with you because one of the portals is guarded by undefeatable monsters and the other is too high to jump to.  Please gather up 24 #b#t4001022#'s#k and bring them to me.  Be sure not to miss any.  If they disappear, your party will fail!");
+                        eim.setProperty("leader5thpreamble","done");
                         cm.dispose();
                     }
-		}else{
-                    if(gaveItems == null){
-                        if(cm.itemQuantity(4001022) >= 24){
-                            cm.sendOk("Good job! you have collected all 24 #b#t4001022#'s#k");
-                        }else{
-                            cm.sendOk("Sorry you don't have all 24 #b#t4001022#'s#k");
-                            cm.dispose();
+                    else { // check how many they have compared to number of party members
+                                    // check for stage completed
+                                    var complete = eim.getProperty("5stageclear");
+                                    if (complete != null) {
+                                        cm.sendNext("Please proceed in the Party Quest, the portal opened!");
+                                        cm.dispose();
+                                    }
+                                    else {
+                            if (cm.itemQuantity(4001022) != 24) {
+                                cm.sendNext("I'm sorry, but you do not have all 24 #b#t4001022#'s#k needed to clear this stage.");
+                                cm.dispose();
+                            }
+                            else {
+                                cm.sendNext("Congratulations on clearing the fifth stage! I will open the portal now.");
+                                clear(5,eim,cm);
+                                cm.givePartyExp(5400, party);
+                                cm.gainItem(4001022, -24);
+                                cm.dispose();
+                            }
                         }
-                    }else{
-                        cm.sendOk("Hurry, goto the next stage, the portal is open!");
+                    }
+                }
+            }
+            else { // non leader
+                var eim = cm.getPlayer().getEventInstance();
+                pstring = "member5thpreamble" + cm.getPlayer().getId().toString();
+                preamble = eim.getProperty(pstring);
+                if (status == 0 && preamble == null) {
+                    var qstring = "member5th" + cm.getPlayer().getId().toString();
+                    var question = eim.getProperty(qstring);
+                    if (question == null) {
+                        qstring = "FUCK";
+                    }
+                    cm.sendNext("Please gather up 24 #b#t4001022#'s#k and bring them to me.  Be sure not to miss any.  If they disappear, your party will fail!");
+
+                }
+                else if (status == 0) {// otherwise
+                                // check for stage completed
+                                var complete = eim.getProperty("5stageclear");
+                                if (complete != null) {
+                                    cm.sendNext("Please proceed in the Party Quest, the portal opened!");
+                                    cm.dispose();
+                                }
+                                else {
+                            cm.sendOk("Please talk to me after you've completed the stage.");
+                            cm.dispose();
+                    }
+                }
+                else if (status == 1) {
+                    if (preamble == null) {
+                        cm.sendOk("Ok, best of luck to you!");
                         cm.dispose();
                     }
-		}}
-        }else if (status == 1){
-            cm.sendOk("You may continue to the next stage!");
-            cm.removeAll(4001022);
-            cm.gate();
-            cm.clear();
-            cm.givePartyExp(5400, eim.getPlayers());
-            eim.setProperty("5stageclear","true");
-            eim.setProperty("leader" + nthtext + "gaveItems","done");
-            cm.dispose();
-        }            
+                    else { // shouldn't happen, if it does then just dispose
+                        cm.dispose();
+                    }
+
+                }
+                else if (status == 2) { // preamble completed
+                    eim.setProperty(pstring,"done");
+                    cm.dispose();
+                }
+                else { // shouldn't happen, but still...
+                    eim.setProperty(pstring,"done"); // just to be sure
+                    cm.dispose();
+                }
+            }
+        }
     }
-}
-     
-     
-function isLeader(){
-    if(cm.getParty() == null){
-        return false;
-    }else{
-        return cm.isLeader();
-    }
+
+function clear(stage, eim, cm) {
+eim.setProperty("5stageclear","true");
+var packetef = MaplePacketCreator.showEffect("quest/party/clear");
+var packetsnd = MaplePacketCreator.playSound("Party1/Clear");
+var packetglow = MaplePacketCreator.environmentChange("gate",2);
+var map = eim.getMapInstance(cm.getPlayer().getMapId());
+map.broadcastMessage(packetef);
+map.broadcastMessage(packetsnd);
+map.broadcastMessage(packetglow);
+var mf = eim.getMapFactory();
+map = mf.getMap(922010100 + stage * 100);
+cm.givePartyExp(270, party);
 }

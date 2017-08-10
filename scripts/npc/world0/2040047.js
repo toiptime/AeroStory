@@ -1,15 +1,14 @@
 /*
 	This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-		       Matthias Butz <matze@odinms.de>
-		       Jan Christian Meyer <vimes@odinms.de>
+                       Matthias Butz <matze@odinms.de>
+                       Jan Christian Meyer <vimes@odinms.de>
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
+    it under the terms of the GNU Affero General Public License version 3
+    as published by the Free Software Foundation. You may not use, modify
+    or distribute this program under any other version of the
+    GNU Affero General Public License.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,80 +18,61 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-/*
-@	Author : Raz
-@
-@	NPC = Sgt.Anderson
-@	Map =  Abandoned Tower <Stage 1>
-@	NPC MapId = 922010100
-@	NPC Exit-MapId = 221024500
-@
- */
-//4001022 - PASS OF DIMENSION
 
-var status = 0;
+/**
+-- Odin JavaScript --------------------------------------------------------------------------------
+	Sgt. Anderson - Hidden Street : Abandoned Tower
+-- By ---------------------------------------------------------------------------------------------
+	Copied from Nella by Xterminator
+-- Version Info -----------------------------------------------------------------------------------
+	1.0 - First Version by Xterminator
+---------------------------------------------------------------------------------------------------
+**/
+
+var status;
 
 function start() {
     status = -1;
-    action(1, 0, 0);
+    action(1,0,0);
 }
 
-function action(mode, type, selection) {
-
-         
-    if (mode == -1) {//ExitChat
+function action(mode, type, selection){
+    if (mode == 1)
+        status++;
+    else {
         cm.dispose();
-	
-    }else if (mode == 0){//No
-        cm.sendOk("OK, Talk to me again if you want to leave here.");
-        cm.dispose();
-
-    }else{		    //Regular Talk
-        if (mode == 1)
-            status++;
-        else
-            status--;
-	if(cm.getPlayer().getMap().getId() == 922010000){
-            if(status == 0){
-		cm.sendNext("Goodbye! see you next time");
-            }else if (status == 1){
-		cm.warp(221024500);
-		cm.dispose();
-            }
-
-
-        }else{
-            if (status == 0) {
-		cm.sendYesNo("Are you sure you want to leave the Quest?");
-            }else if (status == 1) {
-		cm.sendNext("Ok, Bye!");
-            }else if (status == 2) {
-		var eim = cm.getPlayer().getEventInstance();  
-		if(eim == null){
-                    cm.sendOk("Wait, Hey! how'd you get here?\r\nOh well you can leave anyways");
-		}else{
-                    if(isLeader() == true){
-                        eim.disbandParty();
-                        cm.removeFromParty(4001008, eim.getPlayers());
-                    }else{
-                        eim.leftParty(cm.getPlayer());
-                        cm.removeAll(4001022);
-                    }
-                    cm.dispose();
-		}
-	    }else if (status == 3){
-	    	cm.warp(221024500);
-		cm.removeAll(4001022);
-		cm.dispose();
-	    }
-	}
+        return;
     }
-}
-
-function isLeader(){
-    if(cm.getParty() == null){
-        return false;
-    }else{
-        return cm.isLeader();
+    var mapId = cm.getPlayer().getMapId();
+    if (mapId == 922010000) {
+        if (status == 0) {
+            cm.sendNext("See you next time.");
+        } else {
+            cm.warp(221024500);
+            cm.removeAll(4001023);
+            cm.removeAll(4001022);
+            cm.getEventManager("LudiPQ").setProperty("LPQOpen" , "true");
+            cm.getEventManager("LudiPQbonus").setProperty("LPQbonusOpen" , "true");
+            cm.dispose();
+        }
+    } else {
+        if (status == 0) {
+            var outText = "Once you leave the tower, you'll have to restart the whole party quest if you want to try it again.  Do you still want to leave this map?";
+            if (mapId == 922011000) {
+                outText = "Are you ready to leave this map?";
+            }
+            cm.sendYesNo(outText);
+        } else if (mode == 1) {
+            var eim = cm.getPlayer().getEventInstance(); // Remove them from the PQ!
+            if (eim == null)
+                cm.warp(922010000, "st00"); // Warp player
+            else if (cm.isLeader()) {
+                cm.getEventManager("LudiPQ").setProperty("LPQOpen" , "true");
+                eim.disbandParty();
+            }
+            else
+                eim.leftParty(cm.getPlayer());
+            cm.dispose();
+        }
     }
 }

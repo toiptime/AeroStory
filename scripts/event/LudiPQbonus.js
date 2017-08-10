@@ -21,7 +21,7 @@
 
 /**
 -- Odin JavaScript --------------------------------------------------------------------------------
-	Ludibirum PQ (copied from KPQ and tweaked)
+	Ludibirum Bonus PQ (copied from KPQ and tweaked severely)
 -- By ---------------------------------------------------------------------------------------------
 	Stereo
 -- Version Info -----------------------------------------------------------------------------------
@@ -30,15 +30,18 @@
 ---------------------------------------------------------------------------------------------------
 **/
 
+/*
+
+*/
+
 importPackage(Packages.world);
 var exitMap;
 var minPlayers = 5;
 
 function init() { // Initial loading.
     exitMap = em.getChannelServer().getMapFactory().getMap(922010000);
-    em.setProperty("LPQOpen", "true"); // allows entrance.
-    em.setProperty("shuffleReactors", "true");
-    instanceId = 1;
+    em.setProperty("LPQbonusOpen", "true"); // allows entrance.
+    instanceId = 10;
 }
 
 function monsterValue(eim, mobId) { // Killed monster.
@@ -46,44 +49,18 @@ function monsterValue(eim, mobId) { // Killed monster.
 }
 
 function setup() { // Invoked from "EventManager.startInstance()"
-    var eim = em.newInstance("LudiPQ"); // adds a new instance and returns EventInstanceManager.
-    var eventTime = 60 * (1000 * 60); // 60 mins.
-    var firstPortal = eim.getMapInstance(922010100).getPortal("next00");
-    firstPortal.setScriptName("lpq1");
-    var secondPortal = eim.getMapInstance(922010200).getPortal("next00");
-    secondPortal.setScriptName("lpq2");
-    var thirdPortal = eim.getMapInstance(922010300).getPortal("next00");
-    thirdPortal.setScriptName("lpq3");
-    var fourthPortal = eim.getMapInstance(922010400).getPortal("next00");
-    fourthPortal.setScriptName("lpq4");
-    var fifthPortal = eim.getMapInstance(922010500).getPortal("next00");
-    fifthPortal.setScriptName("lpq5");
-    var seventhPortal = eim.getMapInstance(922010700).getPortal("next00");
-    seventhPortal.setScriptName("lpq7");
-    var eighthPortal = eim.getMapInstance(922010800).getPortal("next00");
-    eighthPortal.setScriptName("lpq8");
+    var eim = em.newInstance("LudiPQbonus"); // adds a new instance and returns EventInstanceManager.
+    var eventTime = 31 * (1000 * 2); // 1 min + 2 sec to make up for warp lag.
     em.schedule("timeOut", eim, eventTime); // invokes "timeOut" in how ever many seconds.
     eim.startEventTimer(eventTime); // Sends a clock packet and tags a timer to the players.
     return eim; // returns the new instance.
 }
 
 function playerEntry(eim, player) { // this gets looped for every player in the party.
-    var map = eim.getMapInstance(922010100);
+    var map = eim.getMapInstance(922011000);
     player.changeMap(map, map.getPortal(0)); // We're now in LPQ :D
 }
 
-function playerDead(eim, player) {
-}
-
-function playerRevive(eim, player) { // player presses ok on the death pop up.
-    if (eim.isLeader(player) || party.size() <= minPlayers) { // Check for party leader
-        var party = eim.getPlayers();
-        for (var i = 0; i < party.size(); i++)
-            playerExit(eim, party.get(i));
-        eim.dispose();
-    } else
-        playerExit(eim, player);
-}
 
 function playerDisconnected(eim, player) {
     var party = eim.getPlayers();
@@ -97,16 +74,6 @@ function playerDisconnected(eim, player) {
         eim.dispose();
     } else
         removePlayer(eim, player);
-}
-
-function leftParty(eim, player) {
-    var party = eim.getPlayers();
-    if (party.size() < minPlayers) {
-        for (var i = 0; i < party.size(); i++)
-            playerExit(eim,party.get(i));
-        eim.dispose();
-    } else
-        playerExit(eim, player);
 }
 
 function disbandParty(eim) {
@@ -142,11 +109,11 @@ function cancelSchedule() {
 }
 
 function dispose() {
-    em.schedule("OpenLPQ", 5000); // 5 seconds ?
+    em.schedule("OpenLPQbonus", 5000); // 5 seconds ?
 }
 
 function OpenLPQ() {
-    em.setProperty("LPQOpen", "true");
+    em.setProperty("LPQbonusOpen", "true");
 }
 
 function timeOut(eim) {

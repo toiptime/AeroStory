@@ -31,29 +31,39 @@ function action(mode, type, selection) {
                 if (status == 0) {
                     var eim = cm.getPlayer().getEventInstance();
                     party = eim.getPlayers();
-                    preamble = eim.getProperty("leader2ndpreamble");
+                    preamble = eim.getProperty("leader9thpreamble");
                     if (preamble == null) {
-                        cm.sendNext("Welcome to the second stage of Ludibrium PQ. Please gather 15 #b#t4001022#'s#k and bring them to me. Be sure not to miss any. If they disappear, your party will fail!");
-                        eim.setProperty("leader2ndpreamble","done");
+                        cm.sendNext("Welcome to the ninth stage of Ludibrium PQ. I need you to defeat Alishar to save Ludibrium. Bring me the #b#t4001023##k once he has been dealt with.  Defeating Alishar is no easy task.  Work with eachother and be sure to have items to counter afflictions.");
+                        eim.setProperty("leader9thpreamble","done");
                         cm.dispose();
                     }
                     else { // check how many they have compared to number of party members
                                     // check for stage completed
-                                    var complete = eim.getProperty("2stageclear");
+                                    var complete = eim.getProperty("9stageclear");
                                     if (complete != null) {
-                                        cm.sendNext("Please proceed in the Party Quest, the portal opened!");
-                                        cm.dispose();
+                                         var em = cm.getEventManager("LudiPQbonus");
+                if (em == null) {
+                    cm.sendOk("The bonus is currently unavailable.");
+                } else if (em.getProperty("LPQbonusOpen").equals("true")) {
+                    // Begin the bonus.
+                    em.startInstance(cm.getParty(), cm.getPlayer().getMap());
+                    em.setProperty("LPQbonusOpen" , "false");
+                    cm.getEventManager("LudiPQ").setProperty("LPQOpen" , "true");
+                } else {
+                    cm.sendNext("Something is wrong.  Click on me again.");
+                }
+                cm.dispose();
                                     }
                                     else {
-                            if (cm.itemQuantity(4001022) != 15) {
-                                cm.sendNext("I'm sorry, but you do not have all 15 #b#t4001022#'s#k needed to clear this stage.");
+                            if (cm.itemQuantity(4001023) < 1) {
+                                cm.sendNext("I'm sorry, but you haven't gotten the #b#t4001023##k from Alishar, yet.");
                                 cm.dispose();
                             }
                             else {
-                                cm.sendNext("Congratulations on clearing the second stage! I will open the portal now.");
-                                clear(2,eim,cm);
-                                cm.givePartyExp(3600, party);
-                                cm.gainItem(4001022, -15);
+                                cm.sendNext("Congratulations on defeating Alishar! You have saved Ludibrium! Please speak with me again and I will take your party into the bonus stage.");
+                                clear(9,eim,cm);
+                                cm.givePartyExp(6600, party);
+                                cm.gainItem(4001023, -1);
                                 cm.dispose();
                             }
                         }
@@ -62,29 +72,18 @@ function action(mode, type, selection) {
             }
             else { // non leader
                 var eim = cm.getPlayer().getEventInstance();
-                pstring = "member2ndpreamble" + cm.getPlayer().getId().toString();
+                pstring = "member9thpreamble" + cm.getPlayer().getId().toString();
                 preamble = eim.getProperty(pstring);
                 if (status == 0 && preamble == null) {
-                    var qstring = "member2nd" + cm.getPlayer().getId().toString();
+                    var qstring = "member9th" + cm.getPlayer().getId().toString();
                     var question = eim.getProperty(qstring);
                     if (question == null) {
                         qstring = "FUCK";
                     }
-                    cm.sendNext("Welcome to the second stage of Ludibrium PQ. Please gather 15 #b#t4001022#'s#k and bring them to me. Be sure not to miss any. If they disappear, your party will fail!");
+                    cm.sendNext("Hurry and defeat Alishar.");
 
                 }
-                else if (status == 0) {// otherwise
-                                // check for stage completed
-                                var complete = eim.getProperty("2stageclear");
-                                if (complete != null) {
-                                    cm.sendNext("Please proceed in the Party Quest, the portal opened!");
-                                    cm.dispose();
-                                }
-                                else {
-                            cm.sendOk("Please talk to me after you've completed the stage.");
-                            cm.dispose();
-                    }
-                }
+                
                 else if (status == 1) {
                     if (preamble == null) {
                         cm.sendOk("Ok, best of luck to you!");
@@ -108,7 +107,7 @@ function action(mode, type, selection) {
     }
 
 function clear(stage, eim, cm) {
-eim.setProperty("2stageclear","true");
+eim.setProperty("9stageclear","true");
 var packetef = MaplePacketCreator.showEffect("quest/party/clear");
 var packetsnd = MaplePacketCreator.playSound("Party1/Clear");
 var packetglow = MaplePacketCreator.environmentChange("gate",2);

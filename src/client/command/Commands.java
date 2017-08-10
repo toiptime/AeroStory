@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -434,6 +435,45 @@ public class Commands {
                 } else {
                     player.message("Invalid world; highest number available: " + (server.getWorlds().size() - 1));
                 }
+                break;
+                case "pmob":            
+            int npcId = Integer.parseInt(sub[1]);
+            int mobTime = Integer.parseInt(sub[2]);
+            int xpos = player.getPosition().x;
+            int ypos = player.getPosition().y;
+            int fh = player.getMap().getFootholds().findBelow(player.getPosition()).getId();
+            if (sub[2] == null) {
+                mobTime = 0;
+            }
+            MapleMonster mob = MapleLifeFactory.getMonster(npcId);
+            if (mob != null && !mob.getName().equals("MISSINGNO")) {
+                mob.setPosition(player.getPosition());
+                mob.setCy(ypos);
+                mob.setRx0(xpos + 50);
+                mob.setRx1(xpos - 50);
+                mob.setFh(fh);
+                try {
+                    Connection con = DatabaseConnection.getConnection();
+                    PreparedStatement ps = con.prepareStatement("INSERT INTO spawns ( idd, f, fh, cy, rx0, rx1, type, x, y, mid, mobtime ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )");
+                    ps.setInt(1, npcId);
+                    ps.setInt(2, 0);
+                    ps.setInt(3, fh);
+                    ps.setInt(4, ypos);
+                    ps.setInt(5, xpos + 50);
+                    ps.setInt(6, xpos - 50);
+                    ps.setString(7, "m");
+                    ps.setInt(8, xpos);
+                    ps.setInt(9, ypos);
+                    ps.setInt(10, player.getMapId());
+                    ps.setInt(11, mobTime);
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    player.dropMessage("Failed to save MOB to the database");
+                }
+                player.getMap().addMonsterSpawn(mob, mobTime, 0);
+            } else {
+                player.dropMessage("You have entered an invalid Mob-Id");
+            }
                 break;
             case "saveall"://fyi this is a stupid command
                 for (World world : Server.getInstance().getWorlds()) {

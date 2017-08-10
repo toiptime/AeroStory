@@ -1391,7 +1391,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     public void gainExp(int gain, boolean show, boolean inChat, boolean white) {
         int equip = (gain / 10) * pendantExp;
         int total = gain + equip;
-
         if (level < getMaxLevel()) {
             if ((long) this.exp.get() + (long) total > (long) Integer.MAX_VALUE) {
                 int gainFirst = ExpTable.getExpNeededForLevel(level) - this.exp.get();
@@ -1402,16 +1401,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             if (show && gain != 0) {
                 client.announce(MaplePacketCreator.getShowExpGain(gain, equip, inChat, white));
             }
-            if (exp.get() >= ExpTable.getExpNeededForLevel(level)) {
+          while (exp.get() >= ExpTable.getExpNeededForLevel(level)) {
                 levelUp(true);
-                int need = ExpTable.getExpNeededForLevel(level);
-                if (exp.get() >= need) {
-                    setExp(need - 1);
-                    updateSingleStat(MapleStat.EXP, need);
                 }
             }
         }
-    }
 
     public void gainFame(int delta) {
         this.addFame(delta);

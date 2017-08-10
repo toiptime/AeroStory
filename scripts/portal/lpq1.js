@@ -29,6 +29,7 @@ function enter(pi) {
 	if (eim.getProperty("1stageclear") != null) {
 		pi.getPlayer().changeMap(target, target.getPortal("st00"));
 		return true
-	} else 
-		return false;	
+    } else {
+        return false;
+    }
 }
