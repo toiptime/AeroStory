@@ -560,6 +560,26 @@ public class MapleMap {
     }
 
     public void killMonster(final MapleMonster monster, final MapleCharacter chr, final boolean withDrops, final boolean secondTime, int animation) {
+        if (monster.getId() >= 8810002 && monster.getId() <= 8810009) {            
+            int counter = 0;
+            List<MapleMapObject> monsters = chr.getMap().getMapObjectsInRange(chr.getPosition(), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.MONSTER));
+            for (MapleMapObject monstermo : monsters) {
+                MapleMonster monsterz = (MapleMonster) monstermo;
+                if (counter >= 6) {
+                    List<MapleMapObject> monsterk = chr.getMap().getMapObjectsInRange(chr.getPosition(), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.MONSTER));
+                    for (MapleMapObject monstermok : monsterk) {
+                        MapleMonster monsterf = (MapleMonster) monstermok;
+                        if (monsterf.getId() == 8810018){
+                            killMonster(monsterf, chr, true);
+                            break;
+                        }
+                    }
+                    break;
+                } else if (monsterz.getId() >= 8810010 && monsterz.getId() <= 8810017) {
+                    counter += 1;
+                }
+            }
+        }  
         if (monster.getId() == 8810018 && !secondTime) {
             TimerManager.getInstance().schedule(new Runnable() {
                 @Override
@@ -577,12 +597,6 @@ public class MapleMap {
             removeMapObject(monster);
             return;
         }
-        /*if (chr.getQuest(MapleQuest.getInstance(29400)).getStatus().equals(MapleQuestStatus.Status.STARTED)) {
-         if (chr.getLevel() >= 120 && monster.getStats().getLevel() >= 120) {
-         //FIX MEDAL SHET
-         } else if (monster.getStats().getLevel() >= chr.getLevel()) {
-         }
-         }*/
         int buff = monster.getBuffToGive();
         if (buff > -1) {
             MapleItemInformationProvider mii = MapleItemInformationProvider.getInstance();
@@ -886,6 +900,7 @@ public class MapleMap {
     }
 
     private void monsterItemDrop(final MapleMonster m, final Item item, long delay) {
+        MapleMap.this.spawnItemDrop(m, (MapleCharacter) getAllPlayer().get(0), item, m.getPosition(), false, false);
         final ScheduledFuture<?> monsterItemDrop = TimerManager.getInstance().register(new Runnable() {
             @Override
             public void run() {

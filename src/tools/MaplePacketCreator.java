@@ -650,7 +650,7 @@ public class MaplePacketCreator {
         mplew.writeBool(c.gmLevel() > 0); //admin byte
         short toWrite = (short) (c.gmLevel() * 32);
         //toWrite = toWrite |= 0x100; only in higher versions
-        mplew.write(toWrite > 0x80 ? 0x80 : toWrite);//0x80 is admin, 0x20 and 0x40 = subgm
+        mplew.write(toWrite >= 0x100 ? 0x100 : 0);//0x80 is admin, 0x20 and 0x40 = subgm
         mplew.writeBool(c.gmLevel() > 0);
         //mplew.writeShort(toWrite > 0x80 ? 0x80 : toWrite); only in higher versions...
         mplew.writeMapleAsciiString(c.getAccountName());
@@ -4182,7 +4182,7 @@ public class MaplePacketCreator {
 
     public static byte[] getPlayerNPC(PlayerNPCs npc) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendOpcode.IMITATED_NPC_RESULT.getValue());
+        mplew.writeShort(SendOpcode.IMITATED_NPC_DATA.getValue());
         mplew.write(0x01);
         mplew.writeInt(npc.getId());
         mplew.writeMapleAsciiString(npc.getName());
@@ -6253,9 +6253,8 @@ public class MaplePacketCreator {
             mplew.writeShort(3);
             mplew.writeInt(chr.getMarriageRing().getRingId());
             mplew.writeInt(chr.getMarriageRing().getPartnerRingId());
-            mplew.writeAsciiString(getRightPaddedStr(chr.getName(), '\0', 13));
-            mplew.writeAsciiString(getRightPaddedStr(chr.getMarriageRing().getPartnerName(), '\0', 13));
-        }
+            mplew.writeAsciiString(StringUtil.getRightPaddedStr(chr.getGender() == 0 ? chr.getName() : chr.getMarriageRing().getPartnerName(), '\0', 13));
+            mplew.writeAsciiString(StringUtil.getRightPaddedStr(chr.getGender() == 0 ? chr.getMarriageRing().getPartnerName() : chr.getName(), '\0', 13));        }
     }
 
     public static byte[] finishedSort(int inv) {

@@ -331,23 +331,22 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     }
                 }
             }
-            for (Integer mid : toSpawn) {
-                final MapleMonster mob = MapleLifeFactory.getMonster(mid);
-                if (eventInstance != null) {
-                    eventInstance.registerMonster(mob);
-                }
-                mob.setPosition(getPosition());
-                if (dropsDisabled()) {
-                    mob.disableDrops();
-                }
-                TimerManager.getInstance().schedule(new Runnable() {
-
+            TimerManager.getInstance().schedule(new Runnable() {
                     @Override
                     public void run() {
-                        reviveMap.spawnMonster(mob);
+                        for (Integer mid : toSpawn) {
+                            final MapleMonster mob = MapleLifeFactory.getMonster(mid); 
+                            if (eventInstance != null) {
+                                eventInstance.registerMonster(mob);
+                            }
+                           mob.setPosition(getPosition());
+                           if (dropsDisabled()) {
+                                mob.disableDrops();
+                            }
+                           reviveMap.spawnMonster(mob);
+                        }
                     }
                 }, getAnimationTime("die1"));
-            }
         }
         if (eventInstance != null) {
             eventInstance.unregisterMonster(this);

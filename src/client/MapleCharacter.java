@@ -3347,29 +3347,34 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     }
 
     public final boolean insertNewChar() {
-        final Connection con = DatabaseConnection.getConnection();
+       final Connection con = DatabaseConnection.getConnection();
         PreparedStatement ps = null;
 
         try {
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
-            ps = con.prepareStatement("INSERT INTO characters (str, dex, luk, `int`, gm, skincolor, gender, job, hair, face, map, meso, spawnpoint, accountid, name, world) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
-            ps.setInt(1, 12);
-            ps.setInt(2, 5);
-            ps.setInt(3, 4);
+            ps = con.prepareStatement("INSERT INTO characters (level, str, dex, luk, `int`, gm, skincolor, gender, job, hair, face, equipslots, useslots, setupslots, etcslots, map, buddyCapacity, meso, spawnpoint, accountid, name, world) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
+            ps.setInt(1, level);
+            ps.setInt(2, 12);
+            ps.setInt(3, 5);
             ps.setInt(4, 4);
-            ps.setInt(5, gmLevel);
-            ps.setInt(6, skinColor.getId());
-            ps.setInt(7, gender);
-            ps.setInt(8, getJob().getId());
-            ps.setInt(9, hair);
-            ps.setInt(10, face);
-            ps.setInt(11, mapid);
-            ps.setInt(12, Math.abs(meso.get()));
-            ps.setInt(13, 0);
-            ps.setInt(14, accountid);
-            ps.setString(15, name);
-            ps.setInt(16, world);
+            ps.setInt(5, 4);
+            ps.setInt(6, gmLevel);
+            ps.setInt(7, skinColor.getId());
+            ps.setInt(8, gender);
+            ps.setInt(9, getJob().getId());
+            ps.setInt(10, hair);
+            ps.setInt(11, face);
+            for (int i = 1; i < 5; i++) {
+                ps.setInt(i + 11, getSlots(i));
+            }
+            ps.setInt(16, mapid);
+            ps.setInt(17, buddylist.getCapacity());
+            ps.setInt(18, Math.abs(meso.get()));
+            ps.setInt(19, 0);
+            ps.setInt(20, accountid);
+            ps.setString(21, name);
+            ps.setInt(22, world);
 
             int updateRows = ps.executeUpdate();
             if (updateRows < 1) {
@@ -3410,41 +3415,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
 
             ItemFactory.INVENTORY.saveItems(itemsWithType, id);
 
-            /*//jobs start with skills :|
-             ps = con.prepareStatement("INSERT INTO skills (characterid, skillid, skilllevel, masterlevel, expiration) VALUES (?, ?, ?, ?, ?)");
-             ps.setInt(1, id);
-             for (final Entry<Skill, SkillEntry> skill : skills.entrySet()) {
-             ps.setInt(2, skill.getKey().getId());
-             ps.setInt(3, skill.getValue().skillevel);
-             ps.setInt(4, skill.getValue().masterlevel);
-             ps.setLong(5, skill.getValue().expiration);
-             ps.execute();
-             }
-             ps.close();
-
-             //sometimes starts with quests too :|
-             ps = con.prepareStatement("INSERT INTO queststatus (`queststatusid`, `characterid`, `quest`, `status`, `time`, `forfeited`) VALUES (DEFAULT, ?, ?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
-             try (PreparedStatement pse = con.prepareStatement("INSERT INTO questprogress VALUES (DEFAULT, ?, ?, ?)")) {
-             ps.setInt(1, id);
-             for (MapleQuestStatus q : quests.values()) {
-             ps.setInt(2, q.getQuest().getId());
-             ps.setInt(3, q.getStatus().getId());
-             ps.setLong(4, q.getCompletionTime());
-             ps.setInt(5, q.getForfeited());
-             ps.executeUpdate();
-             try (ResultSet rse = ps.getGeneratedKeys()) {
-             rse.next();
-             for (int mob : q.getProgress().keySet()) {
-             pse.setInt(1, rse.getInt(1));
-             pse.setInt(2, mob);
-             pse.setString(3, q.getProgress(mob));
-             pse.addBatch();
-             }
-             pse.executeBatch();
-             }
-             }
-             } don't think this is needed for v83*/
-
             con.commit();
             return true;
         } catch (Throwable t) {
@@ -3461,11 +3431,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                     ps.close();
                 }
                 con.setAutoCommit(true);
-                con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+                con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);            
             } catch (SQLException e) {
+                System.out.println(e);
             }
         }
-    }
+    }  
 
     public void saveToDB() {
         Connection con = DatabaseConnection.getConnection();
