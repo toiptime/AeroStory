@@ -150,7 +150,7 @@ public class MapleStatEffect {
 
     private static MapleStatEffect loadFromData(MapleData source, int sourceid, boolean skill, boolean overTime) {
         MapleStatEffect ret = new MapleStatEffect();
-        ret.duration = MapleDataTool.getIntConvert("time", source, -1);
+        ret.duration = 60000; //MapleDataTool.getIntConvert("time", source, -1);
         ret.hp = (short) MapleDataTool.getInt("hp", source, 0);
         ret.hpR = MapleDataTool.getInt("hpR", source, 0) / 100.0;
         ret.mp = (short) MapleDataTool.getInt("mp", source, 0);
@@ -171,7 +171,7 @@ public class MapleStatEffect {
         if (!ret.skill && ret.duration > -1) {
             ret.overTime = true;
         } else {
-            ret.duration *= 1000; // items have their times stored in ms, of course
+            ret.duration = (!skill ? MapleDataTool.getIntConvert("time", source, -1) : Integer.MAX_VALUE);
             ret.overTime = overTime;
         }
         ArrayList<Pair<MapleBuffStat, Integer>> statups = new ArrayList<>();

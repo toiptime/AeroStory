@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS `spawns`;CREATE TABLE `spawns` (
+DROP TABLE IF EXISTS `spawns`;
+CREATE TABLE `spawns` (
   `id` int(11) NOT NULL auto_increment,
   `idd` int(11) NOT NULL,
   `f` int(11) NOT NULL,

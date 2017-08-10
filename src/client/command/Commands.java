@@ -98,6 +98,37 @@ public class Commands {
         }
         return true;
     }
+    
+    public static boolean executeDonatorCommand(MapleClient c, String[] sub, char heading) {
+        MapleCharacter chr = c.getPlayer();
+        if (heading == '!' && chr.gmLevel() == 0) {
+            return false;
+		}	      
+        if (sub[0].equalsIgnoreCase("dcommands")) {
+            chr.dropMessage("-----AeroStory Donator Commands-----");
+            chr.dropMessage("!buffme   -Buff yourself");
+            chr.dropMessage("!maxskills -Max all your skills and get cool mounts!");
+         } else if (sub[0].equals("buffme")) {
+            int[] array = {1001003, 2001002, 1101006, 1101007, 1301007, 2201001, 2121004, 2111005, 2311003, 1121002, 4211005, 3121002, 1121000, 2311003, 1101004, 1101006, 4101004, 4111001, 2111005, 1111002, 2321005, 3201002, 4101003, 4201002, 5101006, 1321010, 1121002, 1120003};
+            for (int i = 0; i < array.length; i++) {
+                SkillFactory.getSkill(array[i]).getEffect(SkillFactory.getSkill(array[i]).getMaxLevel()).applyTo(chr);
+            }
+
+        } else if (sub[0].equals("maxskills")) {
+            for (MapleData skill_ : MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/" + "String.wz")).getData("Skill.img").getChildren()) {
+                try {
+                    Skill skill = SkillFactory.getSkill(Integer.parseInt(skill_.getName()));
+                    chr.changeSkillLevel(skill, (byte) skill.getMaxLevel(), skill.getMaxLevel(), -1);
+                } catch (NumberFormatException nfe) {
+                    break;
+                } catch (NullPointerException npe) {
+                    continue;
+                }
+
+            }
+        }
+        return true;
+    }
 
     public static boolean executeGMCommand(MapleClient c, String[] sub, char heading) {
         MapleCharacter player = c.getPlayer();
