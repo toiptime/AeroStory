@@ -30,6 +30,7 @@ import java.util.Map;
 import client.MapleCharacter;
 import client.MapleQuestStatus;
 import client.MapleQuestStatus.Status;
+import constants.ServerConstants;
 import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
@@ -136,6 +137,10 @@ public class MapleQuest {
     }
 
     private boolean canStart(MapleCharacter c, int npcid) {
+        if (!ServerConstants.ENABLE_QUESTS) {
+            c.dropMessage("Estan Activado las misiones.");
+            return false;
+        }
         if (c.getQuest(this).getStatus() != Status.NOT_STARTED && !(c.getQuest(this).getStatus() == Status.COMPLETED && repeatable)) {
             return false;
         }
