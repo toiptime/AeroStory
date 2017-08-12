@@ -32,6 +32,7 @@ public class ServerConstants {
     public static final long RANKING_INTERVAL = 3600000;
     public static final boolean ENABLE_PIC = true;
     public static final boolean ENABLE_QUESTS = true;
+    public static boolean Java_8 = true;
     //Event Configuration
     public static final boolean PERFECT_PITCH = false;
     public static final String EVENTS = "automsg KerningPQ Boats Subway AirPlane elevator";
@@ -41,4 +42,5 @@ public class ServerConstants {
     public static final String DB_URL = "jdbc:mysql://localhost:3306/AeroStory?autoReconnect=true";
     public static final String DB_USER = "root";
     public static final String DB_PASS = "";
+    
 }

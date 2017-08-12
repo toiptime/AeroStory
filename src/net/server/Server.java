@@ -44,6 +44,7 @@ import java.util.Set;
 import net.MapleServerHandler;
 import net.mina.MapleCodecFactory;
 import net.server.channel.Channel;
+import net.server.console.ConsoleGUI;
 import net.server.guild.MapleAlliance;
 import net.server.guild.MapleGuild;
 import net.server.guild.MapleGuildCharacter;
@@ -74,6 +75,7 @@ public class Server implements Runnable {
     private PlayerBuffStorage buffStorage = new PlayerBuffStorage();
     private Map<Integer, MapleAlliance> alliances = new LinkedHashMap<>();
     private boolean online = false;
+    private static ConsoleGUI console = null; 
 
     public static Server getInstance() {
         if (instance == null) {
@@ -98,6 +100,27 @@ public class Server implements Runnable {
             world.removeChannel(channel);
         }
     }
+    
+    public void restart() {
+        for (World w : getWorlds()) {
+            w.shutdown();
+        }
+        TimerManager.getInstance().purge();
+        TimerManager.getInstance().stop();
+        worlds.clear();
+        worlds = null;
+        channels.clear();
+        channels = null;
+        worldRecommendedList.clear();
+        worldRecommendedList = null;
+        acceptor.unbind();
+        acceptor = null;
+        instance = null;
+        System.out.println("");
+        System.out.println("");
+        System.out.println("rnRestarting the server....rn");
+        getInstance().run();
+    }  
 
     public Channel getChannel(int world, int channel) {
         return worlds.get(world).getChannel(channel);
@@ -220,8 +243,16 @@ public class Server implements Runnable {
     }
 
     public static void main(String args[]) {
-        Server.getInstance().run();
-    }
+        //Server.getInstance().run();
+        Server.getConsole().main(null);
+    }  
+    
+    public static ConsoleGUI getConsole() {
+        if (console == null) {
+            console = new ConsoleGUI();
+        }
+        return console;
+    }  
 
     public Properties getSubnetInfo() {
         return subnetInfo;

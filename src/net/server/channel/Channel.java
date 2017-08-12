@@ -37,6 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import net.MapleServerHandler;
 import net.mina.MapleCodecFactory;
 import net.server.PlayerStorage;
+import net.server.Server;
 import net.server.world.MapleParty;
 import net.server.world.MaplePartyCharacter;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -139,6 +140,7 @@ public final class Channel {
     }
 
     public void addPlayer(MapleCharacter chr) {
+        Server.getConsole().loadPlayers();
         players.addPlayer(chr);
         chr.announce(MaplePacketCreator.serverMessage(serverMessage));
     }
@@ -148,6 +150,7 @@ public final class Channel {
     }
 
     public void removePlayer(MapleCharacter chr) {
+        Server.getConsole().loadPlayers();
         players.removePlayer(chr.getId());
     }
 
