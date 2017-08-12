@@ -2710,6 +2710,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 MapleInventoryManipulator.addById(client, 4310000, (short) 1);
             }
         }
+        int[] levels = {24, 19, 74, 99, 124, 149, 174, 199};
+        short[] amount = {75, 125, 200, 300, 425, 550, 700, 850};
+        for (int i = 0; i < levels.length; i++) {  
+            if (getLevel() == levels[i]) {
+            server.MapleInventoryManipulator.addById(getClient(), 4030002, amount[i]);
+        }
+    }  
         if (level == 200 && !isGM()) {
             final String names = (getMedalText() + name);
             client.getWorldServer().broadcastPacket(MaplePacketCreator.serverNotice(6, String.format(LEVEL_200, names, names)));
