@@ -2386,12 +2386,228 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             hpDecreaseTask.cancel(false);
         }
     }
+    
+    public void autoAdvance() {
+        //Start Auto Job Advancing
+        // Start ARAN Auto Job Advance
+        if (getJob() == MapleJob.LEGEND) {
+            changeJob(MapleJob.ARAN1);
+            return;
+        }
+        if (getJob() == MapleJob.ARAN1) {
+            changeJob(MapleJob.ARAN2);
+            return;
+        }
+        if (getJob() == MapleJob.ARAN2) {
+            changeJob(MapleJob.ARAN3);
+            return;
+        }
+        if (getJob() == MapleJob.ARAN3) {
+            changeJob(MapleJob.ARAN4);
+            return;
+        }
+        //End ARAN Auto Job Advance
+        
+        
+        //Start EXPLORER Job Advance
+        //Start Warrior
+        if (getJob() == MapleJob.FIGHTER) {
+            changeJob(MapleJob.CRUSADER);
+            return;
+        }
+        if (getJob() == MapleJob.CRUSADER) {
+            changeJob(MapleJob.HERO);
+            return;
+        }
+        if (getJob() == MapleJob.PAGE) {
+            changeJob(MapleJob.WHITEKNIGHT);
+            return;
+        }
+        if (getJob() == MapleJob.WHITEKNIGHT) {
+            changeJob(MapleJob.PALADIN);
+            return;
+        }
+        if (getJob() == MapleJob.SPEARMAN) {
+            changeJob(MapleJob.DRAGONKNIGHT);
+            return;
+        }
+        if (getJob() == MapleJob.DRAGONKNIGHT) {
+            changeJob(MapleJob.DARKKNIGHT);
+            return;
+        }
+        //End Warrior
+        //Start Magician
+        if (getJob() == MapleJob.FP_WIZARD) {
+            changeJob(MapleJob.FP_MAGE);
+            return;
+        }
+        if (getJob() == MapleJob.FP_MAGE) {
+            changeJob(MapleJob.FP_ARCHMAGE);
+            return;
+        }
+        if (getJob() == MapleJob.IL_WIZARD) {
+            changeJob(MapleJob.IL_MAGE);
+            return;
+        }
+        if (getJob() == MapleJob.IL_MAGE) {
+            changeJob(MapleJob.IL_ARCHMAGE);
+            return;
+        }
+        if (getJob() == MapleJob.CLERIC) {
+            changeJob(MapleJob.PRIEST);
+            return;
+        }
+        if (getJob() == MapleJob.PRIEST) {
+            changeJob(MapleJob.BISHOP);
+            return;
+        }
+        //End Magician
+        //Start Archer
+        if (getJob() == MapleJob.HUNTER) {
+            changeJob(MapleJob.RANGER);
+            return;
+        }
+        if (getJob() == MapleJob.RANGER) {
+            changeJob(MapleJob.BOWMASTER);
+            return;
+        }
+        if (getJob() == MapleJob.CROSSBOWMAN) {
+            changeJob(MapleJob.SNIPER);
+            return;
+        }
+        if (getJob() == MapleJob.SNIPER) {
+            changeJob(MapleJob.MARKSMAN);
+            return;
+        }
+        //End Archer
+        //Start Rouge
+        if (getJob() == MapleJob.ASSASSIN) {
+            changeJob(MapleJob.HERMIT);
+            return;
+        }
+        if (getJob() == MapleJob.HERMIT) {
+            changeJob(MapleJob.NIGHTLORD);
+            return;
+        }
+        if (getJob() == MapleJob.BANDIT) {
+            changeJob(MapleJob.CHIEFBANDIT);
+            return;
+        }
+        if (getJob() == MapleJob.CHIEFBANDIT) {
+            changeJob(MapleJob.SHADOWER);
+            return;
+        }
+        //End Rouge
+        //Start Pirate
+        if (getJob() == MapleJob.BRAWLER) {
+            changeJob(MapleJob.MARAUDER);
+            return;
+        }
+        if (getJob() == MapleJob.MARAUDER) {
+            changeJob(MapleJob.BUCCANEER);
+            return;
+        }
+        if (getJob() == MapleJob.GUNSLINGER) {
+            changeJob(MapleJob.OUTLAW);
+            return;
+        }
+        if (getJob() == MapleJob.OUTLAW) {
+            changeJob(MapleJob.CORSAIR);
+            return;
+        }
+        //End Pirate
+        //End EXPLORER Job Advance
+        
+        //Start CYGNUS Job Advance
+        //Start Dawnwarrior
+        if (getJob() == MapleJob.DAWNWARRIOR1) {
+            changeJob(MapleJob.DAWNWARRIOR2);
+            return;
+        }
+        if (getJob() == MapleJob.DAWNWARRIOR2) {
+            changeJob(MapleJob.DAWNWARRIOR3);
+            return;
+        }
+        if (getJob() == MapleJob.DAWNWARRIOR3) {
+            changeJob(MapleJob.DAWNWARRIOR4);
+            return;
+        }
+        //End Dawnwarrior
+        //Start Blazewizard
+        if (getJob() == MapleJob.BLAZEWIZARD1) {
+            changeJob(MapleJob.BLAZEWIZARD2);
+            return;
+        }
+        if (getJob() == MapleJob.BLAZEWIZARD2) {
+            changeJob(MapleJob.BLAZEWIZARD3);
+            return;
+        }
+        if (getJob() == MapleJob.BLAZEWIZARD3) {
+            changeJob(MapleJob.BLAZEWIZARD4);
+            return;
+        }
+        //End Blazewizard
+        //Start Windarcher
+        if (getJob() == MapleJob.WINDARCHER1) {
+            changeJob(MapleJob.WINDARCHER2);
+            return;
+        }
+        if (getJob() == MapleJob.WINDARCHER2) {
+            changeJob(MapleJob.WINDARCHER3);
+            return;
+        }
+        if (getJob() == MapleJob.WINDARCHER3) {
+            changeJob(MapleJob.WINDARCHER4);
+            return;
+        }
+        //End Windarcher
+        //Start Nightwalker
+        if (getJob() == MapleJob.NIGHTWALKER1) {
+            changeJob(MapleJob.NIGHTWALKER2);
+            return;
+        }
+        if (getJob() == MapleJob.NIGHTWALKER2) {
+            changeJob(MapleJob.NIGHTWALKER3);
+            return;
+        }
+        if (getJob() == MapleJob.NIGHTWALKER3) {
+            changeJob(MapleJob.NIGHTWALKER4);
+            return;
+        }
+        //End Nightwalker
+        //Start Thunderbreaker
+        if (getJob() == MapleJob.THUNDERBREAKER1) {
+            changeJob(MapleJob.THUNDERBREAKER2);
+            return;
+        }
+        if (getJob() == MapleJob.THUNDERBREAKER2) {
+            changeJob(MapleJob.THUNDERBREAKER3);
+            return;
+        }
+        if (getJob() == MapleJob.THUNDERBREAKER3) {
+            changeJob(MapleJob.THUNDERBREAKER4);
+            return;
+        }
+        //End Thunderbreaker
+        //End CYGNUS Job Advance
+        //End Auto Job Advance
+    }  
 
     public void levelUp(boolean takeexp) {
         Skill improvingMaxHP = null;
         Skill improvingMaxMP = null;
         int improvingMaxHPLevel = 0;
         int improvingMaxMPLevel = 0;
+        
+        if (getJob() != MapleJob.MAGICIAN) {
+     if (level == 10 || level == 30 || level == 70 || level == 120) {
+            autoAdvance();
+        }
+} else {
+     if (level == 8 || level == 30 || level == 70 || level == 120) {
+            autoAdvance();
+        }
+}  
 
         if (isBeginnerJob()) {
             remainingAp = 0;
