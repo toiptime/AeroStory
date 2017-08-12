@@ -5,6 +5,7 @@ import java.util.Random;
 public class Randomizer {
 
     private final static Random rand = new Random();
+    private static Randomizer instance = new Randomizer();
 
     public static int nextInt() {
 	return rand.nextInt();
@@ -24,6 +25,10 @@ public class Randomizer {
 
     public static double nextDouble() {
 	return rand.nextDouble();
+    }
+    
+    public static Randomizer getInstance() { 
+        return instance; 
     }
 
     public static float nextFloat() {

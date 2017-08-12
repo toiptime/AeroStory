@@ -952,6 +952,15 @@ public class MapleMap {
             @Override
             public void sendPackets(MapleClient c) {
                 c.announce(MaplePacketCreator.spawnMonster(monster, true));
+                if (monster.getId() == 9300166 || monster.getId() == 8810026) { 
+                    TimerManager.getInstance().schedule(new Runnable() { 
+
+                        @Override 
+                        public void run() { 
+                            killMonster(monster, (MapleCharacter) getAllPlayer().get(0), false, false, 4); 
+                        } 
+                    }, 4500 + Randomizer.nextInt(500)); 
+                }  
             }
         }, null);
         updateMonsterController(monster);

@@ -21,6 +21,7 @@
  */
 package client.command;
 
+import client.ChatLog;
 import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.MapleClient;
@@ -195,9 +196,15 @@ public class Commands {
             player.message("Done");
         } else if (sub[0].equals("gmshop")) {
             MapleShopFactory.getInstance().getShop(1337).sendShop(c);
-        } else if (sub[0].equals("heal")) {
+        }  else if (sub[0].equals("viewRecentChat")) {
+                        ChatLog.getInstance().viewRecentAsDrop(player.getClient());
+                    } else if (sub[0].equalsIgnoreCase("searchChat")) {
+                        ChatLog.getInstance().searchLog(sub[1], player.getClient());
+                    }else if (sub[0].equals("heal")) {
             player.setHpMp(30000);
-        } else if (sub[0].equals("id")) {
+        }
+   // }
+    else if (sub[0].equals("id")) {
             try {
                 try (BufferedReader dis = new BufferedReader(new InputStreamReader(new URL("http://www.mapletip.com/search_java.php?search_value=" + sub[1] + "&check=true").openConnection().getInputStream()))) {
                     String s;

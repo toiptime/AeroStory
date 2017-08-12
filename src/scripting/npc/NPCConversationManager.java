@@ -518,4 +518,12 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         dispose();
         return true;
     }
+    
+    public int getvotePoints(){
+        return getPlayer().getvotePoints();
+    }
+
+    public void gainvotePoints(int gain){
+        getPlayer().gainvotePoints(gain);
+    }
 }

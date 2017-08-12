@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package net.server.channel.handlers;
 
+import client.ChatLog;
 import client.MapleCharacter;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -33,6 +34,8 @@ public final class GeneralchatHandler extends net.AbstractMaplePacketHandler {
         String s = slea.readMapleAsciiString();
         MapleCharacter chr = c.getPlayer();
         char heading = s.charAt(0);
+        ChatLog.getInstance().add("["+ChatLog.getInstance().generateTime()+"]" + " ~ " + c.getPlayer().getName() + ": " + s);
+                if (ChatLog.getInstance().getChat().size() >= 500) ChatLog.getInstance().makeLog(); //change 500 to w/e
         if (heading == '/' || heading == '!' || heading == '@') {
             String[] sp = s.split(" ");
             sp[0] = sp[0].toLowerCase().substring(1);

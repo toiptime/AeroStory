@@ -151,6 +151,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     private int initialSpawnPoint;
     private int mapid;
     private int gender;
+    private int votePoints;
     private int currentPage, currentType = 0, currentTab = 1;
     private int chair;
     private int itemEffect;
@@ -2758,6 +2759,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             ret.meso.set(rs.getInt("meso"));
             ret.merchantmeso = rs.getInt("MerchantMesos");
             ret.gmLevel = rs.getInt("gm");
+            ret.votePoints = rs.getInt("votePoints");
             ret.skinColor = MapleSkinColor.getById(rs.getInt("skincolor"));
             ret.gender = rs.getInt("gender");
             ret.job = MapleJob.getById(rs.getInt("job"));
@@ -3665,7 +3667,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
             PreparedStatement ps;
-            ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, gachaexp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpMpUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, messengerid = ?, messengerposition = ?, mountlevel = ?, mountexp = ?, mounttiredness= ?, equipslots = ?, useslots = ?, setupslots = ?, etcslots = ?,  monsterbookcover = ?, vanquisherStage = ?, dojoPoints = ?, lastDojoStage = ?, finishedDojoTutorial = ?, vanquisherKills = ?, matchcardwins = ?, matchcardlosses = ?, matchcardties = ?, omokwins = ?, omoklosses = ?, omokties = ? WHERE id = ?", Statement.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, gachaexp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpMpUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, messengerid = ?, messengerposition = ?, mountlevel = ?, mountexp = ?, mounttiredness= ?, equipslots = ?, useslots = ?, setupslots = ?, etcslots = ?,  monsterbookcover = ?, vanquisherStage = ?, dojoPoints = ?, lastDojoStage = ?, finishedDojoTutorial = ?, vanquisherKills = ?, matchcardwins = ?, matchcardlosses = ?, matchcardties = ?, omokwins = ?, omoklosses = ?, omokties = ?, votePoints = ? WHERE id = ?", Statement.RETURN_GENERATED_KEYS);
             if (gmLevel < 1 && level > 199) {
                 ps.setInt(1, isCygnus() ? 120 : 200);
             } else {
@@ -3751,7 +3753,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             ps.setInt(45, omokwins);
             ps.setInt(46, omoklosses);
             ps.setInt(47, omokties);
-            ps.setInt(48, id);
+            ps.setInt(48, votePoints);
+            ps.setInt(49, id);
 
             int updateRows = ps.executeUpdate();
             if (updateRows < 1) {
@@ -3928,6 +3931,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 client.disconnect(false, false); //FAGGOTS
             }
         }, duration);
+    }
+    
+    public void gainvotePoints(int gain){
+        this.votePoints += gain;
+    }
+
+    public int getvotePoints(){
+        return this.votePoints;
     }
 
     public void sendPolice(String text) {

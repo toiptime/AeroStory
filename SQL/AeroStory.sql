@@ -42,6 +42,7 @@ CREATE TABLE `accounts` (
   `tempban` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `greason` tinyint(4) NOT NULL DEFAULT '0',
   `tos` tinyint(1) NOT NULL DEFAULT '0',
+  `votePoints` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `ranking1` (`id`,`banned`,`gm`)
@@ -219,6 +220,7 @@ CREATE TABLE `characters` (
   `finishedDojoTutorial` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `vanquisherKills` int(11) unsigned NOT NULL DEFAULT '0',
   `summonValue` int(11) unsigned NOT NULL DEFAULT '0',
+  `votePoints` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `accountid` (`accountid`),
   KEY `party` (`party`),

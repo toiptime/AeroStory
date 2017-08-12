@@ -84,6 +84,9 @@ public class MapleShop {
                 System.out.println("Wrong slot number in shop " + id);
                 return;
             }
+            if (quantity < 1) {
+                return;
+            }
         } else 
             return;
 
