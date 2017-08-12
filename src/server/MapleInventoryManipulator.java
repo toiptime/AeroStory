@@ -514,4 +514,10 @@ public class MapleInventoryManipulator {
     private static boolean isWeapon(int itemId) {
         return itemId >= 1302000 && itemId < 1492024;
     }
+
+    public static boolean addFromDrop(MapleClient c, Item item) {
+        
+    return addFromDrop(c,item,true);
+        
+    }
 }

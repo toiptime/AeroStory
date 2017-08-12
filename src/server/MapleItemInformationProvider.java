@@ -669,6 +669,24 @@ public class MapleItemInformationProvider {
         equip.setMp(getRandStat(equip.getMp(), 10));
         return equip;
     }
+    
+    public Equip hardcoreItem(Equip equip, short stat) {
+        equip.setStr(stat);
+        equip.setDex(stat);
+        equip.setInt(stat);
+        equip.setLuk(stat);
+        equip.setMatk(stat);
+        equip.setWatk(stat);
+        equip.setAcc(stat);
+        equip.setAvoid(stat);
+        equip.setJump(stat);
+        equip.setSpeed(stat);
+        equip.setWdef(stat);
+        equip.setMdef(stat);
+        equip.setHp(stat);
+        equip.setMp(stat);
+        return equip;
+    }
 
     public MapleStatEffect getItemEffect(int itemId) {
         MapleStatEffect ret = itemEffects.get(Integer.valueOf(itemId));

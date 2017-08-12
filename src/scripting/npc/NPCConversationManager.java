@@ -71,6 +71,18 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     private int npc;
     private String getText;
+    
+    public boolean makeProItem(int id, int hardcore) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        Item item = ii.getEquipById(id);
+        MapleInventoryType type = ii.getInventoryType(id);
+        if (type.equals(MapleInventoryType.EQUIP)) {
+            MapleInventoryManipulator.addFromDrop(c, ii.hardcoreItem((Equip) item, (short) hardcore));
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public NPCConversationManager(MapleClient c, int npc) {
         super(c);

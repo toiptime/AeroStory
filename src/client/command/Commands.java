@@ -28,6 +28,7 @@ import client.MapleJob;
 import client.MapleStat;
 import client.Skill;
 import client.SkillFactory;
+import client.inventory.Equip;
 import client.inventory.Item;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
@@ -513,6 +514,29 @@ public class Commands {
                     }
                 }
                 break;
+                case "proitem":
+                        if (sub.length < 3) {
+                                player.yellowMessage("Syntax: !proitem <itemid> <statvalue>");
+                                break;
+                        }
+                        
+                        int itemid = 0;
+                        short multiply = 0;
+
+                        itemid = Integer.parseInt(sub[1]);
+                        multiply = Short.parseShort(sub[2]);
+
+                        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+                        Item it = ii.getEquipById(itemid);
+                        MapleInventoryType type = ii.getInventoryType(itemid);
+                        if (type.equals(MapleInventoryType.EQUIP)) {
+                                hardsetItemStats((Equip) it, multiply);
+                                MapleInventoryManipulator.addFromDrop(c, it);
+
+                        } else {
+                                player.dropMessage("Make sure it's an equippable item.");
+                        }
+                        break;
             case "npc":
                 if (sub.length < 1) {
                     break;
@@ -618,4 +642,25 @@ public class Commands {
         }
         return builder.toString();
     }
+
+    private static void hardsetItemStats(Equip equip, short stat) {
+            equip.setStr(stat);
+            equip.setDex(stat);
+            equip.setInt(stat);
+            equip.setLuk(stat);
+            equip.setMatk(stat);
+            equip.setWatk(stat);
+            equip.setAcc(stat);
+            equip.setAvoid(stat);
+            equip.setJump(stat);
+            equip.setSpeed(stat);
+            equip.setWdef(stat);
+            equip.setMdef(stat);
+            equip.setHp(stat);
+            equip.setMp(stat);
+            
+            byte flag = equip.getFlag();
+            flag |= ItemConstants.UNTRADEABLE;
+            equip.setFlag(flag);
+        }
 }
