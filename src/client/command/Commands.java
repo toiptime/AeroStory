@@ -905,7 +905,7 @@ public class Commands {
         } else if (sub[0].equals("mesos")) {
             player.gainMeso(Integer.parseInt(sub[1]), true);
         } else if (sub[0].equals("notice")) {
-            Server.getInstance().broadcastMessage(player.getWorld(), MaplePacketCreator.serverNotice(6, "[Notice] " + joinStringFrom(sub, 1)));
+            Server.getInstance().broadcastMessage(player.getWorld(), MaplePacketCreator.serverNotice(6, "[Noticia] " + joinStringFrom(sub, 1)));
         } else if (sub[0].equals("openportal")) {
             player.getMap().getPortal(sub[1]).setPortalState(true);
         } else if (sub[0].equals("closeportal")) {
@@ -1217,17 +1217,7 @@ public class Commands {
                     player.message("Query Failed: " + query);
                 }
                 break;
-            } /*case "shutdownworld": {
-            int time;
-            if (sub.length > 1) {
-                time = Integer.parseInt(sub[1]) * 60000;
-            }
-            Commands.forcePersisting();
-            c.getChannelServer().shutdown();
-            c.getChannelServer().saveAll();
-                    }
-            break;*/
-            case "worldtrip": {
+            } case "worldtrip": {
                     MapleCharacter victim = cserv.getPlayerStorage().getCharacterByName(sub[1]);
                     for (int i = 1; i <= 10; i++) {
                         MapleMap target = cserv.getMapFactory().getMap(200000000);
