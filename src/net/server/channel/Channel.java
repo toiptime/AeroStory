@@ -53,6 +53,7 @@ import scripting.event.EventScriptManager;
 import server.TimerManager;
 import server.events.gm.MapleEvent;
 import server.expeditions.MapleExpedition;
+import net.server.world.remote.WorldChannelInterface;
 import server.expeditions.MapleExpeditionType;
 import server.maps.HiredMerchant;
 import server.maps.MapleMap;
@@ -72,7 +73,9 @@ public final class Channel {
     private ReentrantReadWriteLock merchant_lock = new ReentrantReadWriteLock(true);
     private EnumMap<MapleExpeditionType, MapleExpedition> expeditions = new EnumMap<>(MapleExpeditionType.class);
     private MapleEvent event;
+    private WorldChannelInterface wci = null;
     private boolean finishedShutdown = false;
+    private Boolean worldReady = true;
 
     public Channel(final int world, final int channel) {
         this.world = world;
@@ -113,6 +116,12 @@ public final class Channel {
             System.out.println("Successfully shut down Channel " + channel + " on World " + world + "\r\n");          
         } catch (Exception e) {
             System.err.println("Error while shutting down Channel " + channel + " on World " + world + "\r\n" + e);
+        }
+    }
+    
+    public void saveAll() {
+        for (MapleCharacter chr : players.getAllCharacters()) {
+            chr.saveToDB();
         }
     }
 
@@ -225,6 +234,18 @@ public final class Channel {
         return partym;
 
 
+    }
+
+    public WorldChannelInterface getWorldInterface() {
+        synchronized (worldReady) {
+            while (!worldReady) {
+                try {
+                    worldReady.wait();
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+        return wci;
     }
 
     public class respawnMaps implements Runnable {
