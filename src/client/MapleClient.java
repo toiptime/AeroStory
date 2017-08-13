@@ -75,6 +75,7 @@ public class MapleClient {
     public static final int LOGIN_SERVER_TRANSITION = 1;
     public static final int LOGIN_LOGGEDIN = 2;
     public static final String CLIENT_KEY = "CLIENT";
+
     private MapleAESOFB send;
     private MapleAESOFB receive;
     private IoSession session;
@@ -238,6 +239,27 @@ public class MapleClient {
                 }
             }
         }
+    }
+    
+    public static int findAccIdForCharacterName(String charName) {
+        Connection con = DatabaseConnection.getConnection();
+
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT accountid FROM characters WHERE name = ?");
+            ps.setString(1, charName);
+            ResultSet rs = ps.executeQuery();
+
+            int ret = -1;
+            if (rs.next()) {
+                ret = rs.getInt("accountid");
+            }
+            rs.close();
+            ps.close();
+            return ret;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public void banMacs() {

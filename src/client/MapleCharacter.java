@@ -139,6 +139,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     private static final int[] DEFAULT_KEY = {18, 65, 2, 23, 3, 4, 5, 6, 16, 17, 19, 25, 26, 27, 31, 34, 35, 37, 38, 40, 43, 44, 45, 46, 50, 56, 59, 60, 61, 62, 63, 64, 57, 48, 29, 7, 24, 33, 41, 39};
     private static final int[] DEFAULT_TYPE = {4, 6, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 4, 4, 5, 6, 6, 6, 6, 6, 6, 5, 4, 5, 4, 4, 4, 4, 4};
     private static final int[] DEFAULT_ACTION = {0, 106, 10, 1, 12, 13, 18, 24, 8, 5, 4, 19, 14, 15, 2, 17, 11, 3, 20, 16, 9, 50, 51, 6, 7, 53, 100, 101, 102, 103, 104, 105, 54, 22, 52, 21, 25, 26, 23, 27};
+
     private int world;
     private int accountid, id;
     private int rank, rankMove, jobRank, jobRankMove;
@@ -153,6 +154,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     private int gender;
     private int votePoints;
     private int currentPage, currentType = 0, currentTab = 1;
+    private boolean canTalk = true;
     private int chair;
     private int itemEffect;
     private int guildid, guildrank, allianceRank;
@@ -191,6 +193,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     private HiredMerchant hiredMerchant = null;
     private MapleClient client;
     private MapleGuildCharacter mgc = null;
+    private boolean canSmega;
     private MaplePartyCharacter mpc = null;
     private MapleInventory[] inventory;
     private MapleJob job = MapleJob.BEGINNER;
@@ -246,6 +249,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     private byte pendantExp = 0, lastmobcount = 0;
     private int[] trockmaps = new int[5];
     private int[] viptrockmaps = new int[10];
+    private long afkTime;
     private Map<String, MapleEvents> events = new LinkedHashMap<>();
     private PartyQuest partyQuest = null;
     private boolean loggedIn = false;
@@ -254,6 +258,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
         setStance(0);
         inventory = new MapleInventory[MapleInventoryType.values().length];
         savedLocations = new SavedLocation[SavedLocationType.values().length];
+        afkTime = System.currentTimeMillis();
 
         for (MapleInventoryType type : MapleInventoryType.values()) {
             byte b = 24;
@@ -635,6 +640,56 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             medal = "<" + MapleItemInformationProvider.getInstance().getName(medalItem.getItemId()) + "> ";
         }
         return medal;
+    }
+
+    public boolean getCanTalk() {
+        return canTalk;
+    }
+    
+    public boolean canTalk(boolean yn) {
+        return canTalk = yn;
+    }
+
+    public boolean getCanSmega() {
+        return canSmega;
+    }
+
+    public void setCanSmega(boolean setTo) {
+        canSmega = setTo;
+    }
+
+    public void resetAfkTime() {
+        if (this.chalktext != null && this.chalktext.equals("¡Estoy en AFK ~! Dejame un mensaje o susurro! =D")) {
+            setChalkboard(null);
+        }
+        afkTime = System.currentTimeMillis();
+    }
+    
+    public int[] jailmaps = {
+        930000800, //Jail
+        105100100, // Starter Map
+        109070000, //Party Quest
+        209000001,
+        209000002,
+        209000003,
+        209000004,
+        209000005,
+        209000006,
+        209000007,
+        209000008,
+        209000009,
+        209000010,
+        0
+    };
+
+    public boolean inJail() {
+        boolean injail = false;
+        for (int i = 0; i < jailmaps.length; i++) {
+            if (getMapId() == jailmaps[i]) {
+                injail = true;
+            }
+        }
+        return injail;
     }
 
     public static class CancelCooldownAction implements Runnable {
@@ -1273,6 +1328,39 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
 
     public List<ScheduledFuture<?>> getTimers() {
         return timers;
+    }
+    
+    public void tempban(String reason, Calendar duration, int greason) {
+        if (lastmonthfameids == null) {
+            throw new RuntimeException("Trying to ban a non-loaded character (testhack)");
+        }
+        tempban(reason, duration, greason, client.getAccID());
+        client.getSession().close();
+    }
+
+    /*
+     * 			DateFormat df = DateFormat.getInstance();
+    tempB.set(tempB.get(Calendar.YEAR) + yChange, tempB.get(Calendar.MONTH) + mChange, tempB.get(Calendar.DATE) +
+    (wChange * 7) + dChange, tempB.get(Calendar.HOUR_OF_DAY) + hChange, tempB.get(Calendar.MINUTE) +
+    iChange);
+     */
+    public static boolean tempban(String reason, Calendar duration, int greason, int accountid) {
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("UPDATE accounts SET tempban = ?, banreason = ?, greason = ? WHERE id = ?");
+            Timestamp TS = new Timestamp(duration.getTimeInMillis());
+            ps.setTimestamp(1, TS);
+            ps.setString(2, reason);
+            ps.setInt(3, greason);
+            ps.setInt(4, accountid);
+            ps.executeUpdate();
+            ps.close();
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            //log.error("Error while tempbanning", ex);
+        }
+        return false;
     }
 
     private void enforceMaxHpMp() {

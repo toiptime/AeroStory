@@ -58,6 +58,7 @@ import tools.Randomizer;
 public class MapleMonster extends AbstractLoadedMapleLife {
 
     private MapleMonsterStats stats;
+    private MapleMonsterStats overrideStats;
     private int hp, mp;
     private WeakReference<MapleCharacter> controller = new WeakReference<>(null);
     private boolean controllerHasAggro, controllerKnowsAboutAggro;
@@ -734,6 +735,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     public int getBuffToGive() {
         return this.stats.getBuffToGive();
+    }
+
+    public void setOverrideStats(MapleMonsterStats override) {
+        this.overrideStats = override;
+        this.hp = override.getHp();
+        this.mp = override.getMp();
     }
 
     private final class DamageTask implements Runnable {

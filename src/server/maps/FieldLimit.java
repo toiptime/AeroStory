@@ -32,6 +32,7 @@ public enum FieldLimit {
     CHANGECHANNEL(0x10),
     CANNOTVIPROCK(0x40),
     CANNOTMINIGAME(0x80),
+    CANNOTMIGRATE(0x10),    //change channel, town portal scroll, access cash shop, etc etc
     //NoClue1(0x100), // APQ and a couple quest maps have this
     CANNOTUSEMOUNTS(0x200),
     //NoClue2(0x400), // Monster carnival?
@@ -56,4 +57,5 @@ public enum FieldLimit {
     public boolean check(int fieldlimit) {
         return (fieldlimit & i) == i;
     }
+
 }

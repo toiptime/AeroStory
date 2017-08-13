@@ -46,8 +46,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import net.server.Server;
@@ -66,8 +68,10 @@ import server.TimerManager;
 import server.events.gm.MapleEvent;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
+import server.life.MapleMonsterStats;
 import server.life.MapleNPC;
 import server.life.MobSkillFactory;
+import server.maps.FieldLimit;
 import server.maps.MapleMap;
 import server.maps.MapleMapItem;
 import server.maps.MapleMapObject;
@@ -86,11 +90,281 @@ public class Commands {
             return false;
         }
         switch (sub[0]) {
+                    case "comandos":
+                    case "ayuda":
+                    case "comando":
+            chr.dropMessage("[AeroStory Comando de Jugadores]");
+            chr.dropMessage("@ea - Si se le pega el NPC.");
+            chr.dropMessage("@expfix - Si su experiencia le sale Negativo.");
+            chr.dropMessage("@back - Para Darle su bienvenida.");
+            chr.dropMessage("@goafk - Para estar en AFK");
+            chr.dropMessage("@afk - Para estar los mapas de AFK");
+            chr.dropMessage("@joinevent - Para entrar a los Eventos de los GMs");
+        break;
+        case "joinevent":
+			if(!FieldLimit.CANNOTMIGRATE.check(chr.getMap().getFieldLimit())) {
+				MapleEvent event = c.getChannelServer().getEvent();
+				if(event != null) {
+					if(event.getMapId() != chr.getMapId()) {
+						if(event.getLimit() > 0) {
+							chr.saveLocation("EVENT");
+
+							if(event.getMapId() == 109080000 || event.getMapId() == 109060001)
+								chr.setTeam(event.getLimit() % 2);
+
+							event.minusLimit();
+
+							chr.changeMap(event.getMapId());
+						} else {
+							chr.dropMessage("El limite de jugadores para el evento ya ha sido alcanzado.");
+						}
+					} else {
+						chr.dropMessage(5, "Usted ya esta en el evento.");
+					}
+				} else {
+					chr.dropMessage(5, "Actualmente no hay ningun evento en activo.");
+				}
+			} else {
+				chr.dropMessage(5, "Actualmente se encuentra en un mapa en el que no puede unirse a un evento.");
+			}
+			break;
             case "ea":
                 NPCScriptManager.getInstance().dispose(c);
                 c.announce(MaplePacketCreator.enableActions());
                 chr.message("Hecho, ya puede hablar con los NPC.");
                 break;
+            case "expfix":
+            chr.setExp(0);
+            chr.updateSingleStat(MapleStat.EXP, chr.getExp());
+                break;
+            case "back":
+             c.getPlayer().resetAfkTime();
+             chr.dropMessage("Bienvenido de regreso a AFK! :)");
+             break;
+            case "goafk":
+                chr.setChalkboard("Estoy en AFK ~! Dejame un mensaje o susurro! =D");
+		 break;
+            case "afk":
+                if (!chr.inJail()) {
+                    chr.changeMap(209000008);
+                    chr.getClient().getSession().write(MaplePacketCreator.getClock(36000)); // time in seconds
+                    chr.dropMessage("Every 20 minutes, you will recieve 1 Sleepy Dream");
+                    chr.dropMessage("Please Change Channel To Leave This Map");
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 1200000);
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 2400000);   
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 3600000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 4800000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 6000000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 7200000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 8400000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 9600000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 10800000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 12000000);     
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 13200000);                  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 14400000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 15600000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 16800000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 18000000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 19200000);  
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 20400000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 21600000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 22800000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 24000000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 25200000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 26400000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 27600000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 28800000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 30000000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 31200000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 32400000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 33600000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 34800000); 
+                TimerManager.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        MapleInventoryManipulator.addById(c, 4001063, (short) 1);
+                        c.getPlayer().changeMap(910000000);
+                        c.getPlayer().saveToDB();
+                    }
+                }, 36000000);                                                               
+                } else {
+                    chr.dropMessage("You cannot use this command in this map");
+                }  
+                    break;
             case "rape":
                 List<Pair<MapleBuffStat, Integer>> list = new ArrayList<>();
                 list.add(new Pair<>(MapleBuffStat.MORPH, 8));
@@ -163,23 +437,144 @@ public class Commands {
         Server srv = Server.getInstance();
         if (sub[0].equals("ap")) {
             player.setRemainingAp(Integer.parseInt(sub[1]));
-        } else if (sub[0].equals("buffme")) {
+        } else if (sub[0].equals("clockd")) {
+            player.getMap().setClock(false);
+            } else if (sub[0].equals("zakum")) {
+            for (int m = 8800003; m <= 8800010; m++) {
+                player.getMap().spawnMonsterOnGroudBelow(MapleLifeFactory.getMonster(m), player.getPosition());
+            }
+            player.getMap().spawnMonsterOnGroudBelow(MapleLifeFactory.getMonster(8800000), player.getPosition());
+            player.getMap().broadcastMessage(MaplePacketCreator.serverNotice(0, "El Todopoderoso Zakum ha despertado!"));
+           } else if (sub[0].equals("mutemap")) {
+            for (MapleCharacter chr : player.getMap().getCharacters())
+                {
+                if(chr.gmLevel()<=0)
+                    chr.canTalk(!chr.getCanTalk());
+                }
+                    for (MapleCharacter chr : player.getMap().getCharacters())
+                        chr.dropMessage("La capacidad de conversacion de este mapa se ha cambiado, por favor, escuche como un GM da instrucciones.");
+                        player.dropMessage(6, "Hecho!");
+        } else if (sub[0].equals("killnear")) {
+            MapleMap map = player.getMap();
+            List<MapleMapObject> players = map.getMapObjectsInRange(player.getPosition(), (double) 50000, Arrays.asList(MapleMapObjectType.PLAYER));
+            for (MapleMapObject closeplayers : players) {
+                MapleCharacter playernear = (MapleCharacter) closeplayers;
+            if (playernear.isAlive() && playernear != player);
+                playernear.setHp(0);
+                playernear.updateSingleStat(MapleStat.HP, 0);
+                playernear.dropMessage(6, "Estabas demasiado cerca de un GM.");
+            }                    
+        } else if (sub[0].equals("gmmap")) {
+             player.changeMap(180000000);
+        
+         } else if (sub[0].equals("oxmap")) {
+             player.changeMap(109020001);
+        } else if (sub[0].equals("smegaoff")) {
+            MapleCharacter victim = cserv.getPlayerStorage().getCharacterByName(sub[1]);
+            victim.setCanSmega(false);
+            player.dropMessage("Has inhabilitado " + victim.getName() + "'s mPrivilegios del megafono");
+            if (!(c.getPlayer().getName().equals(victim.getName()))) {
+                player.dropMessage("Los privilegios del megafono han sido desactivados por una PISTOLA. Si continua con el spam, sera temp. Prohibido");
+            }
+          } else if (sub[0].equals("smegaon")) {
+            MapleCharacter victim = cserv.getPlayerStorage().getCharacterByName(sub[1]);
+            victim.setCanSmega(true);
+            player.dropMessage("You have enabled " + victim.getName() + "'s megaphone privilages");
+            if (!(c.getPlayer().getName().equals(victim.getName()))) {
+                player.dropMessage("Your megaphone privilages have been enabled by a GM. Please remember not to spam.");
+            }                     
+        } else if (sub[0].equals("tempban")) {
+            Calendar tempB = Calendar.getInstance();
+            String originalReason = StringUtil.joinAfterString(sub, ":");
+
+            if (sub.length < 4 || originalReason == null) {
+                player.dropMessage("Syntax helper: !tempban <name> [i / m / w / d / h] <amount> [r [reason id]] : Text Reason");
+                //throw new IllegalCommandSyntaxException(4);
+            }
+
+            int yChange = StringUtil.getNamedIntArg(sub, 1, "y", 0);
+            int mChange = StringUtil.getNamedIntArg(sub, 1, "m", 0);
+            int wChange = StringUtil.getNamedIntArg(sub, 1, "w", 0);
+            int dChange = StringUtil.getNamedIntArg(sub, 1, "d", 0);
+            int hChange = StringUtil.getNamedIntArg(sub, 1, "h", 0);
+            int iChange = StringUtil.getNamedIntArg(sub, 1, "i", 0);
+            int gReason = StringUtil.getNamedIntArg(sub, 1, "r", 7);
+
+            String reason = c.getPlayer().getName() + " tempbanned " + sub[1] + ": " + originalReason;
+
+            if (gReason > 14) {
+                player.dropMessage("Ha ingresado un ID de motivo de prohibicion incorrecto. Vuelva a intentarlo.");
+                return true;
+            }
+
+            DateFormat df = DateFormat.getInstance();
+            tempB.set(tempB.get(Calendar.YEAR) + yChange, tempB.get(Calendar.MONTH) + mChange, tempB.get(Calendar.DATE)
+                    + (wChange * 7) + dChange, tempB.get(Calendar.HOUR_OF_DAY) + hChange, tempB.get(Calendar.MINUTE)
+                    + iChange);
+
+            MapleCharacter victim = cserv.getPlayerStorage().getCharacterByName(sub[1]);
+
+            if (victim == null) {
+                int accId = MapleClient.findAccIdForCharacterName(sub[1]);
+                if (accId >= 0 && MapleCharacter.tempban(reason, tempB, gReason, accId)) {
+                    player.dropMessage("The character " + sub[1] + " has been successfully offline-tempbanned till "
+                            + df.format(tempB.getTime()) + ".");
+                } else {
+                    player.dropMessage("There was a problem offline banning character " + sub[1] + ".");
+                }
+            } else {
+                victim.tempban(reason, tempB, gReason);
+                player.dropMessage("The character " + sub[1] + " has been successfully tempbanned till "
+                        + df.format(tempB.getTime()));
+            }
+        }  else if (sub[0].equals("buffme")) {
             final int[] array = {9001000, 9101002, 9101003, 9101008, 2001002, 1101007, 1005, 2301003, 5121009, 1111002, 4111001, 4111002, 4211003, 4211005, 1321000, 2321004, 3121002};
             for (int i : array) {
                 SkillFactory.getSkill(i).getEffect(SkillFactory.getSkill(i).getMaxLevel()).applyTo(player);
             }
         } else if (sub[0].equals("spawn")) {
-            MapleMonster monster = MapleLifeFactory.getMonster(Integer.parseInt(sub[1]));
-            if (monster == null) {
-                return true;
-            }
-            if (sub.length > 2) {
-                for (int i = 0; i < Integer.parseInt(sub[2]); i++) {
-                    player.getMap().spawnMonsterOnGroudBelow(MapleLifeFactory.getMonster(Integer.parseInt(sub[1])), player.getPosition());
-                }
+            int mid = Integer.parseInt(sub[1]);
+            int num = Math.min(StringUtil.getOptionalIntArg(sub, 2, 1), 500);
+            Integer hp = StringUtil.getNamedIntArg(sub, 1, "hp");
+            Integer exp = StringUtil.getNamedIntArg(sub, 1, "exp");
+            Double php = StringUtil.getNamedDoubleArg(sub, 1, "php");
+            Double pexp = StringUtil.getNamedDoubleArg(sub, 1, "pexp");
+            MapleMonster onemob = MapleLifeFactory.getMonster(mid);
+            int newhp = 0;
+            int newexp = 0;
+            double oldExpRatio = ((double) onemob.getHp() / onemob.getExp());
+            if (hp != null) {
+                newhp = hp.intValue();
+            } else if (php != null) {
+                newhp = (int) (onemob.getMaxHp() * (php.doubleValue() / 100));
             } else {
-                player.getMap().spawnMonsterOnGroudBelow(MapleLifeFactory.getMonster(Integer.parseInt(sub[1])), player.getPosition());
+                newhp = onemob.getMaxHp();
             }
+            if (exp != null) {
+                newexp = exp.intValue();
+            } else if (pexp != null) {
+                newexp = (int) (onemob.getExp() * (pexp.doubleValue() / 100));
+            } else {
+                newexp = onemob.getExp();
+            }
+
+            if (newhp < 1) {
+                newhp = 1;
+            }
+
+            MapleMonsterStats overrideStats = new MapleMonsterStats();
+            overrideStats.setHp(newhp);
+            overrideStats.setExp(newexp);
+            overrideStats.setMp(onemob.getMaxMp());
+
+            for (int i = 0; i < num; i++) {
+                MapleMonster mob = MapleLifeFactory.getMonster(mid);
+                mob.setHp(newhp);
+                mob.setOverrideStats(overrideStats);
+                c.getPlayer().getMap().spawnMonsterOnGroudBelow(mob, c.getPlayer().getPosition());
+
+            }
+            return true;
         } else if (sub[0].equals("bombmap")) {
 
             for (MapleCharacter chr : player.getMap().getCharacters()) {
