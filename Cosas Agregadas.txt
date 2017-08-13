@@ -1,0 +1,45 @@
+~~Revision 1
+*Comando para el PlayerNPC.
+*MWLB cuando salia ahora ya no saldra solo tienen que activar el GM 8 en su base de datos.
+*Horntail Metodo Actualizado.
+*Horntail sus partes actualizados con un poco mas de poder.
+*Personajes para agregarle mas cosas. =D
+*Anillos para las parejas estan 100% Arreglados.
+*Henesys Party Quest (HPQ) Esta arreglado.
+*Se ha arreglado el Hired Merchant con unos metodos.
+*Se ha Arreglado el MapleMessenger.
+
+~~Revision 2
+*Se ha Cambiado los estados de GM, pero aun esta en modo de prueba.
+*Se ha arreglado el LudiPQ con LudiPQBonus.
+*Se ha agregado PMOB - Permanente Mobs. !pmob <mobid> <mobSpawnTimeInSeconds>.
+*Se ha agregado los comandos para Donadores.
+
+~~Revision 3
+*Se ha agregado el Avanzado de Trabajo o Job Advance.
+
+~~Revision 4
+*Se ha agregado el !proitem. Ejemplo !proitem [Tu Item] [Stats] - !proitem 2323 32767.
+*Se ha arreglado Town Scroll Fix.
+*Se ha agregado el Auto-Avanze de Job.
+
+~~Revision 5
+*Se ha agregado para activar o desactivar las misiones. =D
+*Agregado el Dist [Carpeta]
+*Se ha agregado para tener ganancia de cada jugador cuando levea =D
+
+~~Revision 6
+*Se ha agregado el AriantPQ =D
+*Se ha puesto el Dupe Correcto.!
+*Se ha agregado el ChatLog. [Players y SuperGMs pueden hablar y el texto lo va a decir todo.]
+*Se ha agregado el VotePoints + SQL con mas tablas.
+*Se ha agregado NPC de Quinto Maplers Aniversario.
+*Se ha agregado el Java 8 para compatibilidad si tienes el JDK 8
+*Se ha agregado la Consola.
+
+~~Revision 7
+*Traduciendo a Español los comandos y algunas cositas mas.
+*Se estan agregando mas comandos.
+
+~~Revision 8
+*Se ha agregado Pandora.
