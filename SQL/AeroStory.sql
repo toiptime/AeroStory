@@ -14765,6 +14765,40 @@ INSERT INTO `makerrewarddata` VALUES ('4251402', '4251401', '9', '4');
 INSERT INTO `makerrewarddata` VALUES ('4251402', '4251402', '1', '1');
 
 -- ----------------------------
+-- Table structure for spawns
+-- ----------------------------
+DROP TABLE IF EXISTS `spawns`;
+CREATE TABLE `spawns` (
+  `id` int(11) NOT NULL auto_increment,
+  `idd` int(11) NOT NULL,
+  `f` int(11) NOT NULL,
+  `fh` int(11) NOT NULL,
+  `type` varchar(1) NOT NULL,
+  `cy` int(11) NOT NULL,
+  `rx0` int(11) NOT NULL,
+  `rx1` int(11) NOT NULL,
+  `x` int(11) NOT NULL,
+  `y` int(11) NOT NULL,
+  `mobtime` int(11) default '1000',
+  `mid` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `pandoralog` (
+`pandoralogid` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`characterid` INTEGER UNSIGNED NOT NULL,
+`itemid` VARCHAR(20) NOT NULL,
+`lastattempt` TIMESTAMP NOT NULL,
+PRIMARY KEY (`pandoralogid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `pandoraitem` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `itemid` INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
 -- Table structure for marriages
 -- ----------------------------
 DROP TABLE IF EXISTS `marriages`;
