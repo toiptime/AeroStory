@@ -35,6 +35,7 @@ import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
 import constants.ExpTable;
 import java.io.File;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -525,5 +526,71 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void gainvotePoints(int gain){
         getPlayer().gainvotePoints(gain);
+    }
+    
+    public int getMaxItems() {
+    	int ret = 0;
+    	try {
+    		Connection con = DatabaseConnection.getConnection();
+    		PreparedStatement ps = con.prepareStatement("SELECT MAX(id) FROM pandoraitems");
+    		ResultSet rs = ps.executeQuery();
+    		if (rs.next()) {
+    			ret = rs.getInt(1);
+    		}
+    		rs.close();
+    		ps.close();
+    	} catch (SQLException e) {
+    		
+    	}
+    	return ret;
+    }
+    
+    public int getPandoraItem(int id) {
+    	int ret = 0;
+    	try {
+    		Connection con = DatabaseConnection.getConnection();
+    		PreparedStatement ps = con.prepareStatement("SELECT itemid FROM pandoraitems WHERE id = ?");
+    		ps.setInt(1, id);
+    		ResultSet rs = ps.executeQuery();
+    		if (rs.next()) {
+    			ret = rs.getInt("itemid");
+    		}
+    		rs.close();
+    		ps.close();
+    	} catch (SQLException e) {
+    		
+    	}
+    	return ret;
+    }
+    
+    public void addPandoraItem(int inv) {
+    	MapleInventoryType type = MapleInventoryType.getByType((byte) inv);
+    	Item pan = c.getPlayer().getInventory(type).getItem((byte) 0);
+    	if (type == null || pan == null) {
+    	return;
+    	}
+    	try {
+    	Connection con = DatabaseConnection.getConnection();
+    	PreparedStatement ps = con.prepareStatement("INSERT INTO pandoraitems(itemid) VALUES (?)");
+    	ps.setInt(1, pan.getItemId());
+    	ps.executeUpdate();
+    	ps.close();
+    	} catch (SQLException e) {
+    		System.out.print("Error excuting MySQL.");
+    	return;
+    	}
+    	MapleInventoryManipulator.removeFromSlot(c, type, (byte) 0, pan.getQuantity(), false);
+    	
+    	}
+    
+    public int getPandoraLog(String itemid)
+    {
+    return getPlayer().getPandoraLog(itemid);
+    }
+
+    public void setBossLog(String itemid)
+    {
+    getPlayer().setPandoraLog(itemid);
+
     }
 }

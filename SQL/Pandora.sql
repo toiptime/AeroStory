@@ -1,0 +1,13 @@
+CREATE TABLE `pandoralog` (
+`pandoralogid` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`characterid` INTEGER UNSIGNED NOT NULL,
+`itemid` VARCHAR(20) NOT NULL,
+`lastattempt` TIMESTAMP NOT NULL,
+PRIMARY KEY (`pandoralogid`)
+) 
+
+CREATE TABLE `pandoraitem` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `itemid` INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`)
+)

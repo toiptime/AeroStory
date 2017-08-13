@@ -5152,4 +5152,42 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     public void setMapId(int mapid) {
         this.mapid = mapid;
     }
+    
+    public int getPandoraLog(String itemid) {
+    	Connection con1 = DatabaseConnection.getConnection();
+    	try {
+    	int ret_count = 0;
+    	PreparedStatement ps;
+    	ps = con1.prepareStatement("select count(*) from pandoralog where characterid = ? and itemid = ? and lastattempt >= subtime(current_timestamp, '1 0:0:0.0')");
+    	ps.setInt(1, id);
+    	ps.setString(2, itemid);
+    	ResultSet rs = ps.executeQuery();
+    	if (rs.next()) {
+    	ret_count = rs.getInt(1);
+    	} else {
+    	ret_count = -1;
+    	}
+    	rs.close();
+    	ps.close();
+    	return ret_count;
+    	} catch (Exception Ex) {
+    		System.out.print("Error reading Pandora Log.");
+    	return -1;
+    	}
+    	}
+    
+    public void setPandoraLog(String itemid) {
+    	Connection con1 = DatabaseConnection.getConnection();
+    	try {
+    	PreparedStatement ps;
+    	ps = con1.prepareStatement("insert into pandoralog (characterid, itemid) values (?,?)");
+    	ps.setInt(1, id);
+    	ps.setString(2, itemid);
+    	ps.executeUpdate();
+    	ps.close();
+    	} catch (Exception Ex) {
+    		System.out.print("Error setting the Pandora Log.");
+    	}
+    	}
+    
 }
